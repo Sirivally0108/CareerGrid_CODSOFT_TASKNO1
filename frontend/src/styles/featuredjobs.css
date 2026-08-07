@@ -1,0 +1,24 @@
+.featured{
+
+    padding:60px;
+
+    text-align:center;
+}
+
+.featured h2{
+
+    margin-bottom:40px;
+
+    color:#2563eb;
+}
+
+.job-container{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+}

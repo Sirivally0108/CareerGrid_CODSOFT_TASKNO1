@@ -1,0 +1,37 @@
+.hero{
+    text-align:center;
+    padding:80px 20px;
+}
+
+.hero h1{
+    font-size:48px;
+    color:#2563eb;
+}
+
+.hero p{
+    margin-top:20px;
+    font-size:20px;
+    color:#555;
+}
+
+.search-box{
+    margin-top:40px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.search-box input{
+    width:400px;
+    padding:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.search-box button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:15px 30px;
+    border-radius:8px;
+}

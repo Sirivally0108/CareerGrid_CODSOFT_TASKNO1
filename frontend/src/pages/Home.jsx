@@ -1,5 +1,17 @@
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import FeaturedJobs from "../components/FeaturedJobs";
+import Footer from "../components/Footer";
+
 function Home() {
-  return <h1>Home Page</h1>;
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <FeaturedJobs />
+      <Footer />
+    </>
+  );
 }
 
 export default Home;
