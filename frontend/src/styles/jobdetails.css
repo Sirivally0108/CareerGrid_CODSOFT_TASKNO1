@@ -1,0 +1,142 @@
+.job-details-page {
+  min-height: 75vh;
+  background: #f5f7f2;
+  padding: 60px 20px;
+}
+
+.job-details-container {
+  max-width: 950px;
+  margin: 0 auto;
+  background: white;
+  padding: 45px;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(23, 43, 42, 0.08);
+}
+
+.job-details-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.company-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  background: #e3f3ee;
+  color: #16866a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.job-details-header h1 {
+  margin: 0;
+  color: #172b2a;
+  font-size: 34px;
+}
+
+.details-company {
+  margin-top: 8px;
+  color: #16866a;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.details-job-type {
+  margin-left: auto;
+  background: #fff4d8;
+  color: #9a7115;
+  padding: 9px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.job-meta {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+  color: #5c6967;
+}
+
+.job-details-container hr {
+  border: none;
+  border-top: 1px solid #e2e8e5;
+  margin-bottom: 30px;
+}
+
+.job-details-container section {
+  margin-bottom: 30px;
+}
+
+.job-details-container h2 {
+  color: #172b2a;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.job-details-container p {
+  color: #5c6967;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skills span {
+  background: #e3f3ee;
+  color: #16866a;
+  padding: 9px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.apply-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  background: #16866a;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.apply-button:hover {
+  background: #117258;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .job-details-container {
+    padding: 25px;
+  }
+
+  .job-details-header {
+    flex-wrap: wrap;
+  }
+
+  .job-details-header h1 {
+    font-size: 26px;
+  }
+
+  .details-job-type {
+    margin-left: 0;
+  }
+
+  .job-meta {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
