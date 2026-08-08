@@ -13,14 +13,29 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         <Route path="/" element={<Home />} />
+
         <Route path="/jobs" element={<Jobs />} />
+
         <Route path="/jobs/:id" element={<JobDetails />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
-        <Route path="/employer" element={<EmployerDashboard />} />
-        <Route path="/candidate" element={<CandidateDashboard />} />
+
+        <Route
+          path="/employer"
+          element={<EmployerDashboard />}
+        />
+
+        <Route
+          path="/candidate"
+          element={<CandidateDashboard />}
+        />
+
         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </BrowserRouter>
   );
