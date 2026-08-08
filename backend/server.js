@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
+
+const jobRoutes = require("./routes/jobRoutes");
 
 const app = express();
 
@@ -7,11 +10,13 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Job Board Backend is Running!");
+    res.send("CareerGrid Backend is Running!");
 });
 
-const PORT = 5000;
+app.use("/api/jobs", jobRoutes);
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
