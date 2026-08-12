@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 
 const userRoutes = require("./routes/userRoutes");
+const jobRoutes = require("./routes/jobRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
@@ -11,7 +12,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// User routes
 app.use("/api/users", userRoutes);
+
+// Job routes
+app.use("/api/jobs", jobRoutes);
 
 // Protected test route
 app.get("/api/protected", authMiddleware, (req, res) => {
@@ -21,6 +26,7 @@ app.get("/api/protected", authMiddleware, (req, res) => {
   });
 });
 
+// Home API
 app.get("/", (req, res) => {
   res.json({
     message: "CODSOFT Job Board API is running",

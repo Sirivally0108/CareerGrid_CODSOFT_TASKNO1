@@ -4,7 +4,9 @@ import "../styles/navbar.css";
 function Navbar() {
   return (
     <nav className="navbar">
-      <div className="logo">JobPortal</div>
+      <Link to="/" className="logo">
+        CareerGrid
+      </Link>
 
       <div className="nav-links">
         <Link to="/">Home</Link>

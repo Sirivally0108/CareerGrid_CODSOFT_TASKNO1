@@ -1,67 +1,81 @@
-.hero{
-    text-align:center;
-    padding:80px 20px;
+.hero {
+  text-align: center;
+  padding: 90px 20px;
+  background: #edfed4;
 }
 
-.hero h1{
-    font-size:48px;
-    color:#2563eb;
+.hero h1 {
+  font-size: 48px;
+  color: #172b2a;
+  margin-bottom: 20px;
 }
 
-.hero p{
-    margin-top:20px;
-    font-size:20px;
-    color:#555;
+.hero p {
+  margin-top: 10px;
+  font-size: 20px;
+  color: #536563;
 }
 
-.search-box{
-    margin-top:40px;
-    display:flex;
-    justify-content:center;
-    gap:15px;
+.search-box {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
-.search-box input{
-    width:400px;
-    padding:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
+.search-box input {
+  width: 400px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #cbd8d3;
+  font-size: 16px;
+  outline: none;
 }
 
-.search-box button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:15px 30px;
-    border-radius:8px;
+.search-box input:focus {
+  border-color: #16866a;
 }
+
+.search-box button {
+  background: #16866a;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-box button:hover {
+  background: #126d57;
+}
+
 @media (max-width: 768px) {
+  .hero {
+    padding: 60px 20px;
+  }
 
-    .hero {
-        padding: 60px 20px;
-    }
+  .hero h1 {
+    font-size: 36px;
+  }
 
-    .hero h1 {
-        font-size: 36px;
-    }
+  .hero p {
+    font-size: 17px;
+  }
 
-    .hero p {
-        font-size: 17px;
-    }
+  .search-box {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .search-box {
-        flex-direction: column;
-        align-items: center;
-    }
+  .search-box input {
+    width: 100%;
+    max-width: 400px;
+  }
 
-    .search-box input {
-        width: 100%;
-        max-width: 400px;
-    }
-
-    .search-box button {
-        width: 100%;
-        max-width: 400px;
-    }
-
+  .search-box button {
+    width: 100%;
+    max-width: 400px;
+  }
 }
