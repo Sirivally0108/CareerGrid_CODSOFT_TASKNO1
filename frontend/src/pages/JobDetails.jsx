@@ -9,7 +9,11 @@ function JobDetails() {
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -35,27 +39,74 @@ function JobDetails() {
     fetchJob();
   }, [id]);
 
+  const handleApply = async () => {
+    if (!token) {
+      setError("Please login as a candidate before applying.");
+      return;
+    }
+
+    setApplying(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/applications",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            job_id: Number(id),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to apply for this job");
+      }
+
+      setMessage("Application submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      setError(error.message);
+    } finally {
+      setApplying(false);
+    }
+  };
+
   if (loading) {
     return (
       <>
         <Navbar />
+
         <main className="job-details-page">
           <p>Loading job details...</p>
         </main>
+
         <Footer />
       </>
     );
   }
 
-  if (error || !job) {
+  if (error && !job) {
     return (
       <>
         <Navbar />
+
         <main className="job-details-page">
           <h2>Job Not Found</h2>
           <p>{error}</p>
-          <Link to="/jobs">Back to Jobs</Link>
+
+          <Link to="/jobs" className="back-button">
+            Back to Jobs
+          </Link>
         </main>
+
         <Footer />
       </>
     );
@@ -104,9 +155,29 @@ function JobDetails() {
             <p>{job.skills}</p>
           </section>
 
+          {message && (
+            <p className="success-message">
+              {message}
+            </p>
+          )}
+
+          {error && job && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+
           <div className="job-actions">
-            <button className="apply-button">
-              Apply Now
+            <button
+              className="apply-button"
+              onClick={handleApply}
+              disabled={applying || !!message}
+            >
+              {applying
+                ? "Applying..."
+                : message
+                ? "Applied"
+                : "Apply Now"}
             </button>
 
             <Link to="/jobs" className="back-button">

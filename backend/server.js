@@ -6,7 +6,7 @@ const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
-
+const applicationRoutes = require("./routes/applicationRoutes");
 const app = express();
 
 app.use(cors());
@@ -18,6 +18,8 @@ app.use("/api/users", userRoutes);
 // Job routes
 app.use("/api/jobs", jobRoutes);
 
+// Application routes
+app.use("/api/applications", applicationRoutes);
 // Protected test route
 app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({
