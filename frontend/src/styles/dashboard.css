@@ -4,6 +4,8 @@
   background: #edfed4;
 }
 
+/* Header */
+
 .dashboard-header {
   max-width: 1200px;
   margin: 0 auto 35px;
@@ -14,14 +16,18 @@
 }
 
 .dashboard-header h1 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
+  font-size: 36px;
   color: #172b2a;
-  font-size: 34px;
 }
 
 .dashboard-header p {
-  color: #666;
+  margin: 0;
+  color: #5f6f6c;
+  font-size: 16px;
 }
+
+/* Buttons */
 
 .dashboard-button {
   display: inline-block;
@@ -31,156 +37,169 @@
   color: white;
   text-decoration: none;
   font-weight: 600;
+  border: none;
+  cursor: pointer;
 }
 
 .dashboard-button:hover {
-  background: #126b55;
+  background: #126e58;
 }
+
+/* Statistics */
 
 .dashboard-stats {
   max-width: 1200px;
   margin: 0 auto 40px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
 .stat-card {
   background: white;
   padding: 25px;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  text-align: center;
 }
 
 .stat-card h3 {
+  margin: 0;
+  font-size: 32px;
   color: #16866a;
-  font-size: 30px;
-  margin-bottom: 5px;
 }
 
 .stat-card p {
-  color: #666;
+  margin: 8px 0 0;
+  color: #5f6f6c;
 }
+
+/* Applications / Jobs section */
 
 .applications-section {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.applications-section h2 {
-  color: #172b2a;
+.applications-section > h2 {
   margin-bottom: 20px;
+  color: #172b2a;
 }
+
+/* Job/Application cards */
 
 .applications-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
 .application-card {
   background: white;
-  padding: 22px;
-  border-radius: 12px;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  gap: 25px;
 }
 
 .application-card h3 {
-  color: #16866a;
-  margin-bottom: 8px;
-}
-
-.application-company {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
+  margin: 0 0 8px;
+  color: #172b2a;
+  font-size: 21px;
 }
 
 .application-card p {
-  color: #666;
-  margin: 5px 0;
+  margin: 6px 0;
+  color: #5f6f6c;
 }
+
+.application-company {
+  color: #16866a !important;
+  font-weight: 600;
+}
+
+/* Card buttons */
 
 .application-actions {
   display: flex;
+  gap: 10px;
   align-items: center;
-  gap: 15px;
-}
-
-.status {
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.status.pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status.shortlisted {
-  background: #d1f2e6;
-  color: #126b55;
-}
-
-.status.rejected {
-  background: #f8d7da;
-  color: #842029;
+  flex-wrap: wrap;
 }
 
 .view-job-button {
-  padding: 9px 16px;
-  border: 1px solid #16866a;
+  display: inline-block;
+  padding: 10px 16px;
   border-radius: 7px;
-  color: #16866a;
+  background: #16866a;
+  color: white;
   text-decoration: none;
   font-weight: 600;
 }
 
+.view-job-button:hover {
+  background: #126e58;
+}
+
+/* Empty dashboard */
+
 .empty-dashboard {
   background: white;
-  padding: 50px;
+  padding: 50px 30px;
+  border-radius: 14px;
   text-align: center;
-  border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
 }
 
 .empty-dashboard h3 {
-  color: #172b2a;
   margin-bottom: 10px;
+  color: #172b2a;
 }
 
 .empty-dashboard p {
-  color: #666;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  color: #5f6f6c;
 }
 
-.dashboard-message,
-.dashboard-error {
-  background: white;
-  padding: 30px;
+/* Messages */
+
+.dashboard-message {
   text-align: center;
-  border-radius: 10px;
+  padding: 40px;
+  color: #5f6f6c;
 }
 
 .dashboard-error {
+  background: #fff1f1;
   color: #b42318;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
 }
 
-@media (max-width: 800px) {
+/* Mobile */
+
+@media (max-width: 768px) {
+
+  .dashboard-page {
+    padding: 35px 5%;
+  }
+
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
+  .dashboard-header h1 {
+    font-size: 28px;
+  }
+
   .dashboard-stats {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 
   .application-card {
@@ -190,21 +209,9 @@
 
   .application-actions {
     width: 100%;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 500px) {
-  .dashboard-page {
-    padding: 35px 5%;
   }
 
-  .dashboard-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .application-actions {
-    flex-direction: column;
-    align-items: flex-start;
+  .view-job-button {
+    text-align: center;
   }
 }

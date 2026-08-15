@@ -8,7 +8,8 @@ import Register from "./pages/Register";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import CandidateDashboard from "./pages/CandidateDashboard";
 import NotFound from "./pages/NotFound";
-
+import PostJob from "./pages/PostJob";
+import Messages from "./pages/Messages";
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,8 @@ function App() {
         <Route path="/employer" element={<EmployerDashboard />} />
         <Route path="/candidate" element={<CandidateDashboard />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/post-job" element={<PostJob />} />
+        <Route path="/messages" element={<Messages />} />
       </Routes>
     </BrowserRouter>
   );

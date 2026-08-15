@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 const applicationRoutes = require("./routes/applicationRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 const app = express();
 
 app.use(cors());
@@ -17,6 +18,7 @@ app.use("/api/users", userRoutes);
 
 // Job routes
 app.use("/api/jobs", jobRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Application routes
 app.use("/api/applications", applicationRoutes);

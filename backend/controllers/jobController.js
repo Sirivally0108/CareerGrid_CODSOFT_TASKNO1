@@ -101,8 +101,36 @@ const getJobById = async (req, res) => {
   }
 };
 
+// Get jobs posted by the logged-in employer
+const getMyJobs = async (req, res) => {
+  try {
+    if (req.user.role !== "employer") {
+      return res.status(403).json({
+        message: "Only employers can view their jobs",
+      });
+    }
+
+    const result = await pool.query(
+      `SELECT *
+       FROM jobs
+       WHERE employer_id = $1
+       ORDER BY created_at DESC`,
+      [req.user.id]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Get my jobs error:", error.message);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   createJob,
   getJobs,
   getJobById,
+  getMyJobs,
 };

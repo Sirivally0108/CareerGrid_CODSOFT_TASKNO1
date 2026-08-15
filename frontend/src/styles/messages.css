@@ -1,0 +1,275 @@
+.messages-page {
+  min-height: 100vh;
+  padding: 40px 6%;
+  background: #edfed4;
+}
+
+.messages-container {
+  max-width: 1200px;
+  height: 650px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Contacts */
+
+.contacts-panel {
+  border-right: 1px solid #e5e9e5;
+  overflow-y: auto;
+}
+
+.messages-title {
+  padding: 25px;
+  border-bottom: 1px solid #e5e9e5;
+}
+
+.messages-title h1 {
+  margin: 0 0 6px;
+  color: #172b2a;
+}
+
+.messages-title p {
+  margin: 0;
+  color: #6a7773;
+  font-size: 14px;
+}
+
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-item {
+  width: 100%;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  border-bottom: 1px solid #f0f2f0;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.contact-item:hover,
+.contact-item.active {
+  background: #edfed4;
+}
+
+.contact-avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #16866a;
+  color: white;
+  font-weight: bold;
+}
+
+.contact-item strong {
+  display: block;
+  color: #172b2a;
+}
+
+.contact-item span {
+  display: block;
+  margin-top: 4px;
+  color: #71807b;
+  font-size: 13px;
+}
+
+/* Conversation */
+
+.conversation-panel {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.conversation-header {
+  padding: 18px 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e5e9e5;
+}
+
+.conversation-header h2 {
+  margin: 0;
+  color: #172b2a;
+  font-size: 20px;
+}
+
+.conversation-header p {
+  margin: 4px 0 0;
+  color: #71807b;
+  font-size: 14px;
+}
+
+.messages-list {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background: #f8fcf5;
+}
+
+.message-row {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.message-row.mine {
+  justify-content: flex-end;
+}
+
+.message-row.theirs {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 65%;
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.message-row.mine .message-bubble {
+  background: #16866a;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.theirs .message-bubble {
+  background: white;
+  color: #172b2a;
+  border: 1px solid #e0e7e1;
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.message-bubble span {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Send form */
+
+.message-form {
+  display: flex;
+  gap: 10px;
+  padding: 18px;
+  border-top: 1px solid #e5e9e5;
+  background: white;
+}
+
+.message-form input {
+  flex: 1;
+  padding: 13px 15px;
+  border: 1px solid #ccd8d0;
+  border-radius: 8px;
+  outline: none;
+}
+
+.message-form input:focus {
+  border-color: #16866a;
+}
+
+.message-form button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  background: #16866a;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.message-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Empty states */
+
+.conversation-empty,
+.messages-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  padding: 30px;
+}
+
+.conversation-empty h2,
+.messages-empty h2 {
+  color: #172b2a;
+}
+
+.conversation-empty p,
+.messages-empty p,
+.no-contacts,
+.no-messages {
+  color: #71807b;
+}
+
+.no-contacts,
+.no-messages {
+  padding: 25px;
+  text-align: center;
+}
+
+.no-contacts span,
+.no-messages span {
+  font-size: 13px;
+}
+
+.messages-error {
+  margin: 0;
+  padding: 10px 18px;
+  background: #fff1f1;
+  color: #b42318;
+  text-align: center;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .messages-page {
+    padding: 20px 3%;
+  }
+
+  .messages-container {
+    height: 700px;
+    grid-template-columns: 1fr;
+  }
+
+  .contacts-panel {
+    max-height: 250px;
+    border-right: none;
+    border-bottom: 1px solid #e5e9e5;
+  }
+
+  .conversation-panel {
+    min-height: 450px;
+  }
+
+  .message-bubble {
+    max-width: 80%;
+  }
+}

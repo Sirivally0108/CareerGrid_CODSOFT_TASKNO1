@@ -3,32 +3,54 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 80px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8e5;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
+/* CareerGrid logo */
+
 .logo {
-  text-decoration: none;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: bold;
   color: #16866a;
+  text-decoration: none;
 }
+
+/* Navigation links */
 
 .nav-links {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 28px;
 }
 
 .nav-links a {
-  text-decoration: none;
   color: #172b2a;
+  text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
   color: #16866a;
 }
+
+/* Logout */
+
+.logout-button {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: #172b2a;
+  padding: 0;
+}
+
+.logout-button:hover {
+  color: #16866a;
+}
+
+/* Mobile */
 
 @media (max-width: 768px) {
   .navbar {
@@ -41,5 +63,9 @@
     gap: 15px;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .logo {
+    font-size: 25px;
   }
 }

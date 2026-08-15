@@ -9,11 +9,15 @@ function JobDetails() {
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [applying, setApplying] = useState(false);
+
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [resume, setResume] = useState(null);
+  const [coverLetter, setCoverLetter] = useState("");
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -39,15 +43,38 @@ function JobDetails() {
     fetchJob();
   }, [id]);
 
-  const handleApply = async () => {
+  const handleApplyClick = () => {
+    setMessage("");
+    setError("");
+
     if (!token) {
       setError("Please login as a candidate before applying.");
       return;
     }
 
-    setApplying(true);
+    setShowApplicationForm(true);
+  };
+
+  const handleSubmitApplication = async (event) => {
+    event.preventDefault();
+
     setMessage("");
     setError("");
+
+    if (!token) {
+      setError("Please login as a candidate before applying.");
+      return;
+    }
+
+    if (!resume) {
+      setError("Please select your resume.");
+      return;
+    }
+
+    if (!coverLetter.trim()) {
+      setError("Please enter a cover letter.");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -59,7 +86,9 @@ function JobDetails() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            job_id: Number(id),
+            job_id: job.id,
+            resume: resume.name,
+            cover_letter: coverLetter.trim(),
           }),
         }
       );
@@ -67,15 +96,18 @@ function JobDetails() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to apply for this job");
+        setError(data.message || "Failed to submit application.");
+        return;
       }
 
       setMessage("Application submitted successfully!");
+
+      setShowApplicationForm(false);
+      setResume(null);
+      setCoverLetter("");
     } catch (error) {
       console.error(error);
-      setError(error.message);
-    } finally {
-      setApplying(false);
+      setError("Unable to submit application.");
     }
   };
 
@@ -167,23 +199,85 @@ function JobDetails() {
             </p>
           )}
 
-          <div className="job-actions">
-            <button
-              className="apply-button"
-              onClick={handleApply}
-              disabled={applying || !!message}
-            >
-              {applying
-                ? "Applying..."
-                : message
-                ? "Applied"
-                : "Apply Now"}
-            </button>
+          {!showApplicationForm && (
+            <div className="job-actions">
+              <button
+                className="apply-button"
+                onClick={handleApplyClick}
+              >
+                Apply Now
+              </button>
 
-            <Link to="/jobs" className="back-button">
-              Back to Jobs
-            </Link>
-          </div>
+              <Link to="/jobs" className="back-button">
+                Back to Jobs
+              </Link>
+            </div>
+          )}
+
+          {showApplicationForm && (
+            <form
+              className="application-form"
+              onSubmit={handleSubmitApplication}
+            >
+              <h2>Apply for this Job</h2>
+
+              <div className="form-group">
+                <label htmlFor="resume">
+                  Resume
+                </label>
+
+                <input
+                  id="resume"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(event) =>
+                    setResume(event.target.files[0])
+                  }
+                />
+
+                <small>
+                  PDF, DOC or DOCX
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="coverLetter">
+                  Cover Letter
+                </label>
+
+                <textarea
+                  id="coverLetter"
+                  rows="7"
+                  placeholder="Tell the employer why you are suitable for this job..."
+                  value={coverLetter}
+                  onChange={(event) =>
+                    setCoverLetter(event.target.value)
+                  }
+                />
+              </div>
+
+              <div className="application-form-actions">
+                <button
+                  type="submit"
+                  className="apply-button"
+                >
+                  Submit Application
+                </button>
+
+                <button
+                  type="button"
+                  className="back-button"
+                  onClick={() => {
+                    setShowApplicationForm(false);
+                    setMessage("");
+                    setError("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
 
         </div>
       </main>
