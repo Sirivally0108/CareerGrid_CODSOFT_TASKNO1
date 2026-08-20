@@ -3,29 +3,43 @@ const pool = require("../config/db");
 // Send a message
 const sendMessage = async (req, res) => {
   try {
+    const senderId = req.user.id;
     const { receiver_id, job_id, message } = req.body;
 
-    if (!receiver_id || !message) {
+    if (!receiver_id || !message || !message.trim()) {
       return res.status(400).json({
         message: "Receiver and message are required",
       });
     }
 
-    if (req.user.id === Number(receiver_id)) {
+    if (Number(receiver_id) === Number(senderId)) {
       return res.status(400).json({
         message: "You cannot message yourself",
       });
     }
 
-    const receiver = await pool.query(
-      "SELECT id, name, role FROM users WHERE id = $1",
+    const receiverResult = await pool.query(
+      "SELECT id, role FROM users WHERE id = $1",
       [receiver_id]
     );
 
-    if (receiver.rows.length === 0) {
+    if (receiverResult.rows.length === 0) {
       return res.status(404).json({
         message: "Receiver not found",
       });
+    }
+
+    if (job_id) {
+      const jobResult = await pool.query(
+        "SELECT id FROM jobs WHERE id = $1",
+        [job_id]
+      );
+
+      if (jobResult.rows.length === 0) {
+        return res.status(404).json({
+          message: "Job not found",
+        });
+      }
     }
 
     const result = await pool.query(
@@ -34,10 +48,10 @@ const sendMessage = async (req, res) => {
        VALUES ($1, $2, $3, $4)
        RETURNING *`,
       [
-        req.user.id,
+        senderId,
         receiver_id,
         job_id || null,
-        message,
+        message.trim(),
       ]
     );
 
@@ -55,34 +69,46 @@ const sendMessage = async (req, res) => {
 };
 
 
-// Get conversation between logged-in user and another user
+// Get conversation for a specific user AND job
 const getConversation = async (req, res) => {
   try {
-    const otherUserId = Number(req.params.userId);
+    const userId = req.user.id;
+    const { userId: otherUserId } = req.params;
+    const { job_id } = req.query;
 
-    if (!otherUserId) {
-      return res.status(400).json({
-        message: "User ID is required",
-      });
-    }
-
-    const result = await pool.query(
-      `SELECT
-        messages.*,
+    let query = `
+      SELECT
+        messages.id,
+        messages.sender_id,
+        messages.receiver_id,
+        messages.job_id,
+        messages.message,
+        messages.sent_at,
         sender.name AS sender_name,
         receiver.name AS receiver_name
-       FROM messages
-       JOIN users AS sender
-         ON messages.sender_id = sender.id
-       JOIN users AS receiver
-         ON messages.receiver_id = receiver.id
-       WHERE
-         (messages.sender_id = $1 AND messages.receiver_id = $2)
-         OR
-         (messages.sender_id = $2 AND messages.receiver_id = $1)
-       ORDER BY messages.sent_at ASC`,
-      [req.user.id, otherUserId]
-    );
+      FROM messages
+      JOIN users sender
+        ON messages.sender_id = sender.id
+      JOIN users receiver
+        ON messages.receiver_id = receiver.id
+      WHERE
+        (
+          (messages.sender_id = $1 AND messages.receiver_id = $2)
+          OR
+          (messages.sender_id = $2 AND messages.receiver_id = $1)
+        )
+    `;
+
+    const params = [userId, otherUserId];
+
+    if (job_id) {
+      query += ` AND messages.job_id = $3`;
+      params.push(job_id);
+    }
+
+    query += ` ORDER BY messages.sent_at ASC`;
+
+    const result = await pool.query(query, params);
 
     res.json(result.rows);
   } catch (error) {
@@ -95,31 +121,34 @@ const getConversation = async (req, res) => {
 };
 
 
-// Get people the logged-in user has conversations with
-const getContacts = async (req, res) => {
+// Get all messages involving logged-in user
+const getMyMessages = async (req, res) => {
   try {
+    const userId = req.user.id;
+
     const result = await pool.query(
-      `SELECT DISTINCT
-        u.id,
-        u.name,
-        u.email,
-        u.role
-       FROM messages m
-       JOIN users u
-         ON u.id =
-           CASE
-             WHEN m.sender_id = $1 THEN m.receiver_id
-             ELSE m.sender_id
-           END
-       WHERE m.sender_id = $1
-          OR m.receiver_id = $1
-       ORDER BY u.name`,
-      [req.user.id]
+      `SELECT
+        messages.*,
+        sender.name AS sender_name,
+        receiver.name AS receiver_name,
+        jobs.title AS job_title,
+        jobs.company
+       FROM messages
+       JOIN users sender
+         ON messages.sender_id = sender.id
+       JOIN users receiver
+         ON messages.receiver_id = receiver.id
+       LEFT JOIN jobs
+         ON messages.job_id = jobs.id
+       WHERE messages.sender_id = $1
+          OR messages.receiver_id = $1
+       ORDER BY messages.sent_at DESC`,
+      [userId]
     );
 
     res.json(result.rows);
   } catch (error) {
-    console.error("Get contacts error:", error);
+    console.error("Get messages error:", error);
 
     res.status(500).json({
       message: "Server error",
@@ -131,5 +160,5 @@ const getContacts = async (req, res) => {
 module.exports = {
   sendMessage,
   getConversation,
-  getContacts,
+  getMyMessages,
 };
