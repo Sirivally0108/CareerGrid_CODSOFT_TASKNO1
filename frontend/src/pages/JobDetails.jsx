@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/jobdetails.css";
 
 function JobDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,34 +15,69 @@ function JobDetails() {
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState("");
 
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [checkingApplication, setCheckingApplication] = useState(true);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
-    const fetchJob = async () => {
+    const fetchJobAndApplication = async () => {
       try {
-        const response = await fetch(
+        // Get job details
+        const jobResponse = await fetch(
           `http://localhost:5000/api/jobs/${id}`
         );
 
-        if (!response.ok) {
+        if (!jobResponse.ok) {
           throw new Error("Job not found");
         }
 
-        const data = await response.json();
-        setJob(data);
+        const jobData = await jobResponse.json();
+        setJob(jobData);
+
+        // Check whether candidate already applied
+        if (token) {
+          try {
+            const applicationResponse = await fetch(
+              "http://localhost:5000/api/applications/my",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (applicationResponse.ok) {
+              const applications = await applicationResponse.json();
+
+              const applied = applications.some(
+                (application) =>
+                  String(application.job_id) === String(id)
+              );
+
+              setAlreadyApplied(applied);
+            }
+          } catch (applicationError) {
+            console.error(
+              "Application check error:",
+              applicationError
+            );
+          }
+        }
       } catch (error) {
         console.error(error);
         setError("Unable to load job details.");
       } finally {
         setLoading(false);
+        setCheckingApplication(false);
       }
     };
 
-    fetchJob();
-  }, [id]);
+    fetchJobAndApplication();
+  }, [id, token]);
 
   const handleApplyClick = () => {
     setMessage("");
@@ -49,6 +85,20 @@ function JobDetails() {
 
     if (!token) {
       setError("Please login as a candidate before applying.");
+      return;
+    }
+
+    const user = JSON.parse(
+      sessionStorage.getItem("user") || "null"
+    );
+
+    if (!user || user.role !== "candidate") {
+      setError("Only candidates can apply for jobs.");
+      return;
+    }
+
+    if (alreadyApplied) {
+      setMessage("You have already applied for this job.");
       return;
     }
 
@@ -77,19 +127,20 @@ function JobDetails() {
     }
 
     try {
+      const formData = new FormData();
+
+      formData.append("job_id", job.id);
+      formData.append("resume", resume);
+      formData.append("cover_letter", coverLetter.trim());
+
       const response = await fetch(
         "http://localhost:5000/api/applications",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            job_id: job.id,
-            resume: resume.name,
-            cover_letter: coverLetter.trim(),
-          }),
+          body: formData,
         }
       );
 
@@ -109,6 +160,34 @@ function JobDetails() {
       console.error(error);
       setError("Unable to submit application.");
     }
+  };
+
+  const handleMessageEmployer = () => {
+    const currentToken = sessionStorage.getItem("token");
+    const user = JSON.parse(
+      sessionStorage.getItem("user") || "null"
+    );
+
+    if (!currentToken || !user) {
+      setError("Please login to message the employer.");
+      return;
+    }
+
+    if (user.role !== "candidate") {
+      setError("Only candidates can message employers.");
+      return;
+    }
+
+    if (!job.employer_id) {
+      setError(
+        "Employer information is not available for this job."
+      );
+      return;
+    }
+
+    navigate(
+      `/messages?user=${job.employer_id}&job=${job.id}`
+    );
   };
 
   if (loading) {
@@ -158,7 +237,9 @@ function JobDetails() {
 
             <div>
               <h1>{job.title}</h1>
-              <p className="company-name">{job.company}</p>
+              <p className="company-name">
+                {job.company}
+              </p>
             </div>
           </div>
 
@@ -201,16 +282,39 @@ function JobDetails() {
 
           {!showApplicationForm && (
             <div className="job-actions">
+
               <button
-                className="apply-button"
-                onClick={handleApplyClick}
+                className="message-employer-button"
+                onClick={handleMessageEmployer}
               >
-                Apply Now
+                Message Employer
               </button>
 
-              <Link to="/jobs" className="back-button">
+              {!checkingApplication && !alreadyApplied && (
+                <button
+                  className="apply-button"
+                  onClick={handleApplyClick}
+                >
+                  Apply Now
+                </button>
+              )}
+
+              {!checkingApplication && alreadyApplied && (
+                <div className="already-applied-box">
+                  <strong>✓ Already Applied</strong>
+                  <span>
+                    You have already applied for this job.
+                  </span>
+                </div>
+              )}
+
+              <Link
+                to="/jobs"
+                className="back-button"
+              >
                 Back to Jobs
               </Link>
+
             </div>
           )}
 
@@ -257,6 +361,7 @@ function JobDetails() {
               </div>
 
               <div className="application-form-actions">
+
                 <button
                   type="submit"
                   className="apply-button"
@@ -275,6 +380,7 @@ function JobDetails() {
                 >
                   Cancel
                 </button>
+
               </div>
             </form>
           )}

@@ -44,6 +44,47 @@ function CandidateDashboard() {
       setLoading(false);
     }
   }, [token]);
+  const handleWithdraw = async (applicationId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to withdraw this application?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/applications/${applicationId}/withdraw`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Unable to withdraw application.");
+        return;
+      }
+
+      setApplications((currentApplications) =>
+        currentApplications.map((application) =>
+          application.id === applicationId
+            ? { ...application, status: "Withdrawn" }
+            : application
+        )
+      );
+
+      alert("Application withdrawn successfully.");
+    } catch (error) {
+      console.error(error);
+      alert("Unable to withdraw application.");
+    }
+  };
 
   return (
     <>
@@ -71,7 +112,7 @@ function CandidateDashboard() {
             <h3>
               {
                 applications.filter(
-                  (application) => application.status === "pending"
+                  (application) =>(application.status || "").toLowerCase() === "applied"
                 ).length
               }
             </h3>
@@ -82,7 +123,7 @@ function CandidateDashboard() {
             <h3>
               {
                 applications.filter(
-                  (application) => application.status === "shortlisted"
+                  (application) => (application.status || "").toLowerCase() === "shortlisted"
                 ).length
               }
             </h3>
@@ -93,7 +134,7 @@ function CandidateDashboard() {
             <h3>
               {
                 applications.filter(
-                  (application) => application.status === "rejected"
+                  (application) => (application.status || "").toLowerCase() === "rejected"
                 ).length
               }
             </h3>
@@ -168,6 +209,14 @@ function CandidateDashboard() {
                     >
                       View Job
                     </Link>
+                    {["Applied", "Shortlisted"].includes(application.status) && (
+                      <button
+                        className="view-job-button"
+                        onClick={() => handleWithdraw(application.id)}
+                      >
+                        Withdraw Application
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

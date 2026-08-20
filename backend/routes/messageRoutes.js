@@ -3,17 +3,20 @@ const express = require("express");
 const {
   sendMessage,
   getConversation,
-  getContacts,
+  getMyMessages,
 } = require("../controllers/messageController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+// Send message
 router.post("/", authMiddleware, sendMessage);
 
-router.get("/contacts", authMiddleware, getContacts);
+// Get all messages for logged-in user
+router.get("/my", authMiddleware, getMyMessages);
 
+// Get conversation with another user
 router.get(
   "/conversation/:userId",
   authMiddleware,
