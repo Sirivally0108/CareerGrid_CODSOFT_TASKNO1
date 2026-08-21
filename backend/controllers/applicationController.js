@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { sendEmail } = require("../utils/emailService");
 
 // Apply for a job
 const applyForJob = async (req, res) => {
@@ -57,6 +58,29 @@ const applyForJob = async (req, res) => {
         "Applied",
       ]
     );
+
+    const candidateResult = await pool.query(
+      "SELECT name, email FROM users WHERE id = $1",
+      [req.user.id]
+    );
+
+    const candidate = candidateResult.rows[0];
+
+    try {
+      await sendEmail(
+        candidate.email,
+        `Application Submitted - ${jobResult.rows[0].title}`,
+        `Hello ${candidate.name},
+
+    Your application for "${jobResult.rows[0].title}" at ${jobResult.rows[0].company} has been successfully submitted.
+
+    Application status: Applied
+
+    Thank you for using CareerGrid.`
+      );
+    } catch (emailError) {
+      console.error("Application email error:", emailError);
+    }
 
     res.status(201).json({
       message: "Application submitted successfully",
@@ -187,7 +211,36 @@ const updateApplicationStatus = async (req, res) => {
        RETURNING *`,
       [status, id]
     );
+    const candidateResult = await pool.query(
+      `SELECT users.name, users.email, jobs.title, jobs.company
+      FROM applications
+      JOIN users ON applications.candidate_id = users.id
+      JOIN jobs ON applications.job_id = jobs.id
+      WHERE applications.id = $1`,
+      [id]
+    );
 
+    const candidate = candidateResult.rows[0];
+
+    if (candidate) {
+      try {
+        await sendEmail(
+          candidate.email,
+          `Application Update - ${candidate.title}`,
+          `Hello ${candidate.name},
+
+    Your application for "${candidate.title}" at ${candidate.company} has been updated.
+
+    New status: ${status}
+
+    Please log in to CareerGrid to view your application.
+
+    Thank you.`
+        );
+      } catch (emailError) {
+        console.error("Status update email error:", emailError);
+      }
+    }
     res.json({
       message: "Application status updated successfully",
       application: result.rows[0],
