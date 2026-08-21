@@ -143,6 +143,7 @@ const getEmployerApplications = async (req, res) => {
         applications.*,
         jobs.title,
         jobs.company,
+        users.id AS candidate_id,
         users.name AS candidate_name,
         users.email AS candidate_email
        FROM applications

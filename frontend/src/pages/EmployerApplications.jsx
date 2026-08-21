@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/dashboard.css";
@@ -11,6 +11,7 @@ function EmployerApplications() {
   const [updatingId, setUpdatingId] = useState(null);
 
   const token = sessionStorage.getItem("token");
+  const navigate = useNavigate();
 
   const fetchApplications = async () => {
     if (!token) {
@@ -89,6 +90,12 @@ function EmployerApplications() {
     }
   };
 
+  const openMessage = (application) => {
+    navigate(
+      `/messages?user=${application.candidate_id}&job=${application.job_id}`
+    );
+  };
+
   const appliedCount = applications.filter(
     (application) =>
       (application.status || "").toLowerCase() === "applied"
@@ -112,7 +119,9 @@ function EmployerApplications() {
         <div className="dashboard-header">
           <div>
             <h1>Job Applications</h1>
-            <p>Review and manage candidates who applied for your jobs.</p>
+            <p>
+              Review and manage candidates who applied for your jobs.
+            </p>
           </div>
 
           <Link to="/employer" className="dashboard-button">
@@ -169,8 +178,7 @@ function EmployerApplications() {
 
             <div className="applications-list">
               {applications.map((application) => {
-                const status =
-                  application.status || "Applied";
+                const status = application.status || "Applied";
 
                 return (
                   <div
@@ -237,6 +245,15 @@ function EmployerApplications() {
                       </span>
 
                       <button
+                        type="button"
+                        className="view-job-button"
+                        onClick={() => openMessage(application)}
+                      >
+                        💬 Message Candidate
+                      </button>
+
+                      <button
+                        type="button"
                         className="view-job-button"
                         disabled={updatingId === application.id}
                         onClick={() =>
@@ -250,6 +267,7 @@ function EmployerApplications() {
                       </button>
 
                       <button
+                        type="button"
                         className="view-job-button"
                         disabled={updatingId === application.id}
                         onClick={() =>

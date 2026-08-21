@@ -9,6 +9,7 @@ function Messages() {
 
   const requestedUser = searchParams.get("user");
   const requestedJob = searchParams.get("job");
+  const requestedName = searchParams.get("name");
 
   const [messages, setMessages] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -182,7 +183,7 @@ function Messages() {
           jobId: Number(requestedJob),
           jobTitle: job.title,
           company: job.company,
-          name: "Employer",
+          name: requestedName || "User",
         });
 
         setConversation([]);
