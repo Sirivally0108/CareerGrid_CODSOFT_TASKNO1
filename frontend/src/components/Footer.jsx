@@ -6,7 +6,7 @@ function Footer(){
 
         <footer className="footer">
 
-            <p>© 2026 JobPortal | Built for CodSoft Internship</p>
+            <p>© 2026 CareerGrid | Built for CodSoft Internship</p>
 
         </footer>
 

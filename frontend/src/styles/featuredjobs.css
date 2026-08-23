@@ -1,12 +1,13 @@
 .featured {
-  padding: 60px 20px;
+  padding: 70px 60px;
   text-align: center;
+  background: #ffffff;
 }
 
 .featured h2 {
   margin-bottom: 40px;
   color: #172b2a;
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .featured h2::after {
@@ -28,7 +29,11 @@
 
 @media (max-width: 768px) {
   .featured {
-    padding: 40px 20px;
+    padding: 50px 20px;
+  }
+
+  .featured h2 {
+    font-size: 27px;
   }
 
   .job-container {

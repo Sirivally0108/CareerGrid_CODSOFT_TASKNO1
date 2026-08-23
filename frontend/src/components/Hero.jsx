@@ -1,4 +1,6 @@
+
 import "../styles/hero.css";
+import heroImage from "../assets/careergrid-hero.png";
 
 function Hero() {
   return (
@@ -99,6 +101,7 @@ function Hero() {
         </div>
 
       </div>
+
     </section>
   );
 }

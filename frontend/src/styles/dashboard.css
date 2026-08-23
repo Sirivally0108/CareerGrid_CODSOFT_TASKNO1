@@ -1,0 +1,217 @@
+.dashboard-page {
+  min-height: 100vh;
+  padding: 50px 8%;
+  background: #edfed4;
+}
+
+/* Header */
+
+.dashboard-header {
+  max-width: 1200px;
+  margin: 0 auto 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+  color: #172b2a;
+}
+
+.dashboard-header p {
+  margin: 0;
+  color: #5f6f6c;
+  font-size: 16px;
+}
+
+/* Buttons */
+
+.dashboard-button {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #16866a;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard-button:hover {
+  background: #126e58;
+}
+
+/* Statistics */
+
+.dashboard-stats {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 32px;
+  color: #16866a;
+}
+
+.stat-card p {
+  margin: 8px 0 0;
+  color: #5f6f6c;
+}
+
+/* Applications / Jobs section */
+
+.applications-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.applications-section > h2 {
+  margin-bottom: 20px;
+  color: #172b2a;
+}
+
+/* Job/Application cards */
+
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.application-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+
+.application-card h3 {
+  margin: 0 0 8px;
+  color: #172b2a;
+  font-size: 21px;
+}
+
+.application-card p {
+  margin: 6px 0;
+  color: #5f6f6c;
+}
+
+.application-company {
+  color: #16866a !important;
+  font-weight: 600;
+}
+
+/* Card buttons */
+
+.application-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.view-job-button {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 7px;
+  background: #16866a;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.view-job-button:hover {
+  background: #126e58;
+}
+
+/* Empty dashboard */
+
+.empty-dashboard {
+  background: white;
+  padding: 50px 30px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.empty-dashboard h3 {
+  margin-bottom: 10px;
+  color: #172b2a;
+}
+
+.empty-dashboard p {
+  margin-bottom: 25px;
+  color: #5f6f6c;
+}
+
+/* Messages */
+
+.dashboard-message {
+  text-align: center;
+  padding: 40px;
+  color: #5f6f6c;
+}
+
+.dashboard-error {
+  background: #fff1f1;
+  color: #b42318;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+  .dashboard-page {
+    padding: 35px 5%;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-header h1 {
+    font-size: 28px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .application-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .application-actions {
+    width: 100%;
+  }
+
+  .view-job-button {
+    text-align: center;
+  }
+}

@@ -1,60 +1,79 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import JobCard from "../components/JobCard";
 import "../styles/jobs.css";
 
 function Jobs() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const jobs = [
-    {
-      id: 1,
-      title: "React Developer",
-      company: "Google",
-      location: "Hyderabad, India",
-      salary: "₹12 LPA"
-    },
-    {
-      id: 2,
-      title: "Java Backend Developer",
-      company: "InnoTech Labs",
-      location: "Bangalore, India",
-      salary: "₹7 - ₹12 LPA"
-    },
-    {
-      id: 3,
-      title: "UI/UX Designer",
-      company: "TCS",
-      location: "Remote",
-      salary: "₹7 LPA"
-    }
-  ];
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/jobs"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs");
+        }
+
+        const data = await response.json();
+        setJobs(data);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+        setError("Unable to load jobs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   return (
     <>
       <Navbar />
 
       <main className="jobs-page">
-
         <div className="jobs-header">
-          <h1>Find Jobs</h1>
+          <h1>Find Your Next Opportunity</h1>
           <p>
-            Explore opportunities that match your skills and career goals.
+            Explore jobs from companies hiring through CareerGrid.
           </p>
         </div>
 
-        <div className="jobs-grid">
-          {jobs.map((job) => (
-            <JobCard
-              key={job.id}
-              id={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              salary={job.salary}
-            />
-          ))}
-        </div>
+        {loading && (
+          <p className="jobs-message">Loading jobs...</p>
+        )}
 
+        {error && (
+          <p className="jobs-error">{error}</p>
+        )}
+
+        {!loading && !error && (
+          <div className="jobs-container">
+            {jobs.length === 0 ? (
+              <p className="jobs-message">
+                No jobs available at the moment.
+              </p>
+            ) : (
+              jobs.map((job) => (
+                <JobCard
+                  key={job.id}
+                  id={job.id}
+                  title={job.title}
+                  company={job.company}
+                  location={job.location}
+                  salary={job.salary}
+                  jobType={job.employment_type}
+                />
+              ))
+            )}
+          </div>
+        )}
       </main>
 
       <Footer />
