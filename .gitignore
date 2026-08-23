@@ -2,3 +2,20 @@ node_modules/
 .env
 *.log
 backend/uploads/
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+**/.env
+
+# Build files
+dist/
+build/
+
+# Vite
+.vite/
+
+# Logs
+*.log

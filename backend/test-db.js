@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const pool = require("./config/db");
 
 async function testDatabase() {
@@ -8,10 +6,10 @@ async function testDatabase() {
 
     console.log("Database test successful!");
     console.log("Server time:", result.rows[0].now);
-
-    await pool.end();
   } catch (error) {
-    console.error("Database test failed:", error.message);
+    console.error("Database connection failed:", error.message);
+  } finally {
+    await pool.end();
   }
 }
 

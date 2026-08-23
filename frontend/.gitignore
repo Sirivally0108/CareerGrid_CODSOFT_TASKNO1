@@ -1,4 +1,11 @@
-# Logs
+New-Item pages\Home.jsx -ItemType File
+New-Item pages\Jobs.jsx -ItemType File
+New-Item pages\JobDetails.jsx -ItemType File
+New-Item pages\Login.jsx -ItemType File
+New-Item pages\Register.jsx -ItemType File
+New-Item pages\EmployerDashboard.jsx -ItemType File
+New-Item pages\CandidateDashboard.jsx -ItemType File
+New-Item pages\NotFound.jsx -ItemType File# Logs
 logs
 *.log
 npm-debug.log*
@@ -12,6 +19,9 @@ dist
 dist-ssr
 *.local
 
+node_modules/
+.env
+*.log
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

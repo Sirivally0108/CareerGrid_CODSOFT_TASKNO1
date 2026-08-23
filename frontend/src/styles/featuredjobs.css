@@ -10,6 +10,16 @@
   font-size: 32px;
 }
 
+.featured h2::after {
+  content: "";
+  display: block;
+  width: 45px;
+  height: 3px;
+  background: #16866a;
+  margin: 12px auto 0;
+  border-radius: 3px;
+}
+
 .job-container {
   display: flex;
   justify-content: center;

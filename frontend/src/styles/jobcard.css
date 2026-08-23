@@ -1,23 +1,35 @@
-.job-card{
-    background:white;
-    width:300px;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    transition:.3s;
+.job-card {
+  background: white;
+  width: 300px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(23, 43, 42, 0.08);
+  transition: 0.3s;
 }
 
-.job-card:hover{
-    transform:translateY(-5px);
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(23, 43, 42, 0.12);
 }
 
-.job-card h3{
-    color:#2563eb;
-    margin-bottom:15px;
+.job-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-.job-card p{
-    margin:10px 0;
+.company-logo-small {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #e3f3ee;
+  color: #16866a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
 }
 
 .job-card button{
@@ -69,6 +81,12 @@
   padding: 6px 10px;
   border-radius: 20px;
   font-size: 13px;
+.job-type {
+  background: #fff4d8;
+  color: #9a7115;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -82,6 +100,13 @@
   color: #536563;
   font-size: 16px;
   margin-bottom: 18px;
+  margin-bottom: 8px;
+}
+
+.company-name {
+  color: #16866a;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .job-info {
@@ -113,4 +138,24 @@
     width: 100%;
     max-width: 400px;
   }
+  gap: 10px;
+  color: #5c6967;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.details-button {
+  display: block;
+  text-align: center;
+  width: 100%;
+  padding: 12px;
+  background: #16866a;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.details-button:hover {
+  background: #117258;
 }

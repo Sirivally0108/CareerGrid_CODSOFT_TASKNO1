@@ -7,8 +7,12 @@ function Home() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <FeaturedJobs />
+
+      <main>
+        <Hero />
+        <FeaturedJobs />
+      </main>
+
       <Footer />
     </>
   );
