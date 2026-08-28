@@ -6,7 +6,7 @@ function FeaturedJobs() {
     const [jobs, setJobs] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/jobs")
+        fetch("https://careergrid-codsoft-taskno1.onrender.com/api/jobs")
             .then((response) => response.json())
             .then((data) => {
                 setJobs(data.slice(0, 3));

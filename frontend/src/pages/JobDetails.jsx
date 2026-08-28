@@ -28,7 +28,7 @@ function JobDetails() {
       try {
         // Get job details
         const jobResponse = await fetch(
-          `http://localhost:5000/api/jobs/${id}`
+          `https://careergrid-codsoft-taskno1.onrender.com/api/jobs/${id}`
         );
 
         if (!jobResponse.ok) {
@@ -42,7 +42,7 @@ function JobDetails() {
         if (token) {
           try {
             const applicationResponse = await fetch(
-              "http://localhost:5000/api/applications/my",
+              "https://careergrid-codsoft-taskno1.onrender.com/api/applications/my",
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ function JobDetails() {
       formData.append("cover_letter", coverLetter.trim());
 
       const response = await fetch(
-        "http://localhost:5000/api/applications",
+        "https://careergrid-codsoft-taskno1.onrender.com/api/applications",
         {
           method: "POST",
           headers: {

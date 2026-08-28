@@ -15,7 +15,7 @@ function CandidateDashboard() {
     const fetchApplications = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/applications/my",
+          "https://careergrid-codsoft-taskno1.onrender.com/api/applications/my",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ function CandidateDashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/applications/${applicationId}/withdraw`,
+        `https://careergrid-codsoft-taskno1.onrender.com/api/applications/${applicationId}/withdraw`,
         {
           method: "PATCH",
           headers: {

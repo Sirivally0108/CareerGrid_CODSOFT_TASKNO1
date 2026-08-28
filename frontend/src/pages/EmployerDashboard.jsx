@@ -15,7 +15,7 @@ function EmployerDashboard() {
     const fetchMyJobs = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/jobs/my",
+          "https://careergrid-codsoft-taskno1.onrender.com/api/jobs/my",
           {
             headers: {
               Authorization: `Bearer ${token}`,

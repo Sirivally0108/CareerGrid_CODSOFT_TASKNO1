@@ -13,7 +13,7 @@ function Jobs() {
     const fetchJobs = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/jobs"
+          "https://careergrid-codsoft-taskno1.onrender.com/api/jobs"
         );
 
         if (!response.ok) {

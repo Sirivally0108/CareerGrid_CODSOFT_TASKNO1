@@ -33,7 +33,7 @@ function Messages() {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/api/messages/my",
+          "https://careergrid-codsoft-taskno1.onrender.com/api/messages/my",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -103,7 +103,7 @@ function Messages() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/messages/conversation/${userId}?job_id=${jobId}`,
+        `https://careergrid-codsoft-taskno1.onrender.com/api/messages/conversation/${userId}?job_id=${jobId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -169,7 +169,7 @@ function Messages() {
     const createNewConversation = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/jobs/${requestedJob}`
+          `https://careergrid-codsoft-taskno1.onrender.com/api/jobs/${requestedJob}`
         );
 
         const job = await response.json();
@@ -209,7 +209,7 @@ function Messages() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/messages",
+        "https://careergrid-codsoft-taskno1.onrender.com/api/messages",
         {
           method: "POST",
           headers: {

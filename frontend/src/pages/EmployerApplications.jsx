@@ -22,7 +22,7 @@ function EmployerApplications() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/applications/employer",
+        "https://careergrid-codsoft-taskno1.onrender.com/api/applications/employer",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ function EmployerApplications() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/applications/${applicationId}/status`,
+        `https://careergrid-codsoft-taskno1.onrender.com/api/applications/${applicationId}/status`,
         {
           method: "PATCH",
           headers: {
@@ -206,7 +206,7 @@ function EmployerApplications() {
                         <strong>Resume:</strong>{" "}
                         {application.resume ? (
                           <a
-                            href={`http://localhost:5000/uploads/${application.resume}`}
+                            href={`https://careergrid-codsoft-taskno1.onrender.com/uploads/${application.resume}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="view-job-button"
