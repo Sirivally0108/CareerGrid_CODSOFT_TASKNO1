@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/dashboard.css";
+
+const API_URL =
+  "https://careergrid-codsoft-taskno1.onrender.com/api";
 
 function EmployerApplications() {
   const [applications, setApplications] = useState([]);
@@ -12,6 +15,7 @@ function EmployerApplications() {
 
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
+  const { jobId } = useParams();
 
   const fetchApplications = async () => {
     if (!token) {
@@ -21,11 +25,16 @@ function EmployerApplications() {
     }
 
     try {
+      setLoading(true);
+      setError("");
+
       const response = await fetch(
-        "http://localhost:5000/api/applications/employer",
+        `${API_URL}/applications/employer`,
         {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
         }
       );
@@ -34,13 +43,30 @@ function EmployerApplications() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Failed to load applications"
+          data.message || `Failed to load applications (${response.status})`
         );
       }
 
-      setApplications(data);
+      // Remove withdrawn applications from employer dashboard
+      let visibleApplications = Array.isArray(data)
+        ? data.filter(
+            (application) =>
+              (application.status || "").toLowerCase() !== "withdrawn"
+          )
+        : [];
+
+      // If this page was opened for one particular job,
+      // only show applications for that job.
+      if (jobId) {
+        visibleApplications = visibleApplications.filter(
+          (application) =>
+            String(application.job_id) === String(jobId)
+        );
+      }
+
+      setApplications(visibleApplications);
     } catch (err) {
-      console.error(err);
+      console.error("Employer applications error:", err);
       setError(
         err.message || "Unable to load applications."
       );
@@ -51,20 +77,26 @@ function EmployerApplications() {
 
   useEffect(() => {
     fetchApplications();
-  }, [token]);
+  }, [token, jobId]);
 
   const updateStatus = async (applicationId, status) => {
+    if (!token) {
+      setError("Please login as an employer.");
+      return;
+    }
+
     setUpdatingId(applicationId);
     setError("");
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/applications/${applicationId}/status`,
+        `${API_URL}/applications/${applicationId}/status`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
           body: JSON.stringify({ status }),
         }
@@ -74,24 +106,25 @@ function EmployerApplications() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Failed to update status"
+          data.message || "Failed to update application status"
         );
       }
 
-      const updatedStatus = data.application?.status || status;
+      const updatedApplication = data.application;
 
       setApplications((currentApplications) =>
         currentApplications.map((application) =>
           application.id === applicationId
             ? {
                 ...application,
-                status: updatedStatus,
+                ...updatedApplication,
+                status: updatedApplication.status,
               }
             : application
         )
       );
     } catch (err) {
-      console.error(err);
+      console.error("Status update error:", err);
       setError(
         err.message || "Unable to update application status."
       );
@@ -108,20 +141,17 @@ function EmployerApplications() {
 
   const appliedCount = applications.filter(
     (application) =>
-      (application.status || "Applied").toLowerCase() ===
-      "applied"
+      (application.status || "").toLowerCase() === "applied"
   ).length;
 
   const shortlistedCount = applications.filter(
     (application) =>
-      (application.status || "").toLowerCase() ===
-      "shortlisted"
+      (application.status || "").toLowerCase() === "shortlisted"
   ).length;
 
   const rejectedCount = applications.filter(
     (application) =>
-      (application.status || "").toLowerCase() ===
-      "rejected"
+      (application.status || "").toLowerCase() === "rejected"
   ).length;
 
   return (
@@ -134,8 +164,7 @@ function EmployerApplications() {
             <h1>Job Applications</h1>
 
             <p>
-              Review and manage candidates who applied
-              for your jobs.
+              Review and manage candidates who applied for your jobs.
             </p>
           </div>
 
@@ -181,18 +210,15 @@ function EmployerApplications() {
           </p>
         )}
 
-        {!loading &&
-          !error &&
-          applications.length === 0 && (
-            <div className="empty-dashboard">
-              <h3>No applications yet</h3>
+        {!loading && !error && applications.length === 0 && (
+          <div className="empty-dashboard">
+            <h3>No applications yet</h3>
 
-              <p>
-                Candidates who apply for your jobs will
-                appear here.
-              </p>
-            </div>
-          )}
+            <p>
+              Candidates who apply for your jobs will appear here.
+            </p>
+          </div>
+        )}
 
         {!loading && applications.length > 0 && (
           <section className="applications-section">
@@ -203,15 +229,12 @@ function EmployerApplications() {
                 const status =
                   application.status || "Applied";
 
-                const normalizedStatus =
-                  status.toLowerCase();
-
                 return (
                   <div
                     className="application-card"
                     key={application.id}
                   >
-                    <div className="application-details">
+                    <div>
                       <h3>
                         {application.candidate_name}
                       </h3>
@@ -232,15 +255,15 @@ function EmployerApplications() {
 
                       <p>
                         <strong>Resume:</strong>{" "}
-
                         {application.resume ? (
                           <a
-                            href={`http://localhost:5000/uploads/${encodeURIComponent(
-                              application.resume
-                            )}`}
+                            href={`${API_URL.replace(
+                              "/api",
+                              ""
+                            )}/uploads/${application.resume}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="view-job-button resume-button"
+                            className="view-job-button"
                           >
                             📄 View Resume
                           </a>
@@ -253,14 +276,13 @@ function EmployerApplications() {
                         <strong>Cover Letter:</strong>
                       </p>
 
-                      <p className="cover-letter-text">
+                      <p>
                         {application.cover_letter ||
                           "No cover letter provided."}
                       </p>
 
                       <p>
                         <strong>Applied:</strong>{" "}
-
                         {application.applied_at
                           ? new Date(
                               application.applied_at
@@ -271,7 +293,7 @@ function EmployerApplications() {
 
                     <div className="application-actions">
                       <span
-                        className={`status ${normalizedStatus}`}
+                        className={`status ${status.toLowerCase()}`}
                       >
                         {status}
                       </span>
@@ -286,53 +308,33 @@ function EmployerApplications() {
                         💬 Message Candidate
                       </button>
 
-                      <button
-                        type="button"
-                        className="view-job-button"
-                        disabled={
-                          updatingId === application.id
-                        }
-                        onClick={() =>
-                          updateStatus(
-                            application.id,
-                            "Applied"
-                          )
-                        }
-                      >
-                        Applied
-                      </button>
+                      <label>
+                        <strong>Status:</strong>{" "}
+                        <select
+                          value={status}
+                          disabled={
+                            updatingId === application.id
+                          }
+                          onChange={(event) =>
+                            updateStatus(
+                              application.id,
+                              event.target.value
+                            )
+                          }
+                        >
+                          <option value="Applied">
+                            Applied
+                          </option>
 
-                      <button
-                        type="button"
-                        className="view-job-button"
-                        disabled={
-                          updatingId === application.id
-                        }
-                        onClick={() =>
-                          updateStatus(
-                            application.id,
-                            "Shortlisted"
-                          )
-                        }
-                      >
-                        Shortlist
-                      </button>
+                          <option value="Shortlisted">
+                            Shortlisted
+                          </option>
 
-                      <button
-                        type="button"
-                        className="view-job-button"
-                        disabled={
-                          updatingId === application.id
-                        }
-                        onClick={() =>
-                          updateStatus(
-                            application.id,
-                            "Rejected"
-                          )
-                        }
-                      >
-                        Reject
-                      </button>
+                          <option value="Rejected">
+                            Rejected
+                          </option>
+                        </select>
+                      </label>
                     </div>
                   </div>
                 );

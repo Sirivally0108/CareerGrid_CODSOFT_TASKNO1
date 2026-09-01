@@ -1,9 +1,9 @@
 const pool = require("../config/db");
 const { sendEmail } = require("../utils/emailService");
 
-// ======================================================
-// APPLY FOR A JOB
-// ======================================================
+// ============================================================
+// Apply for a job
+// ============================================================
 const applyForJob = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -21,7 +21,9 @@ const applyForJob = async (req, res) => {
       });
     }
 
-    // Check whether job exists
+    // --------------------------------------------------------
+    // Check whether the job exists
+    // --------------------------------------------------------
     const jobResult = await pool.query(
       "SELECT * FROM jobs WHERE id = $1",
       [job_id]
@@ -33,12 +35,20 @@ const applyForJob = async (req, res) => {
       });
     }
 
-    // Check duplicate application
+    // --------------------------------------------------------
+    // Check whether candidate already has an ACTIVE
+    // application.
+    //
+    // IMPORTANT:
+    // Withdrawn applications are ignored.
+    // Therefore, a candidate can apply again after withdrawing.
+    // --------------------------------------------------------
     const existingApplication = await pool.query(
       `SELECT *
        FROM applications
        WHERE job_id = $1
-       AND candidate_id = $2`,
+       AND candidate_id = $2
+       AND LOWER(status) <> 'withdrawn'`,
       [job_id, req.user.id]
     );
 
@@ -48,7 +58,9 @@ const applyForJob = async (req, res) => {
       });
     }
 
-    // Create application
+    // --------------------------------------------------------
+    // Create a NEW application
+    // --------------------------------------------------------
     const result = await pool.query(
       `INSERT INTO applications
        (job_id, candidate_id, resume, cover_letter, status)
@@ -57,23 +69,25 @@ const applyForJob = async (req, res) => {
       [
         job_id,
         req.user.id,
-        resume,
+        resume || null,
         cover_letter || null,
         "Applied",
       ]
     );
 
-    // Get candidate information
+    // --------------------------------------------------------
+    // Get candidate details for email
+    // --------------------------------------------------------
     const candidateResult = await pool.query(
-      `SELECT name, email
-       FROM users
-       WHERE id = $1`,
+      "SELECT name, email FROM users WHERE id = $1",
       [req.user.id]
     );
 
     const candidate = candidateResult.rows[0];
 
-    // Send email
+    // --------------------------------------------------------
+    // Send application confirmation email
+    // --------------------------------------------------------
     if (candidate) {
       try {
         await sendEmail(
@@ -92,24 +106,23 @@ Thank you for using CareerGrid.`
       }
     }
 
-    return res.status(201).json({
+    res.status(201).json({
       message: "Application submitted successfully",
       application: result.rows[0],
     });
   } catch (error) {
     console.error("Apply job error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 };
 
 
-// ======================================================
-// GET CANDIDATE APPLICATIONS
-// IMPORTANT: Withdrawn applications are NOT returned
-// ======================================================
+// ============================================================
+// Get candidate's applications
+// ============================================================
 const getMyApplications = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -125,29 +138,27 @@ const getMyApplications = async (req, res) => {
         jobs.company,
         jobs.location
        FROM applications
-       JOIN jobs
-         ON applications.job_id = jobs.id
+       JOIN jobs ON applications.job_id = jobs.id
        WHERE applications.candidate_id = $1
-       AND LOWER(COALESCE(applications.status, 'Applied')) <> 'withdrawn'
+       AND LOWER(applications.status) <> 'withdrawn'
        ORDER BY applications.applied_at DESC`,
       [req.user.id]
     );
 
-    return res.json(result.rows);
+    res.json(result.rows);
   } catch (error) {
-    console.error("Get candidate applications error:", error);
+    console.error("Get applications error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 };
 
 
-// ======================================================
-// GET EMPLOYER APPLICATIONS
-// IMPORTANT: Withdrawn applications are NOT returned
-// ======================================================
+// ============================================================
+// Get applications for employer's jobs
+// ============================================================
 const getEmployerApplications = async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -165,30 +176,28 @@ const getEmployerApplications = async (req, res) => {
         users.name AS candidate_name,
         users.email AS candidate_email
        FROM applications
-       JOIN jobs
-         ON applications.job_id = jobs.id
-       JOIN users
-         ON applications.candidate_id = users.id
+       JOIN jobs ON applications.job_id = jobs.id
+       JOIN users ON applications.candidate_id = users.id
        WHERE jobs.employer_id = $1
-       AND LOWER(COALESCE(applications.status, 'Applied')) <> 'withdrawn'
+       AND LOWER(applications.status) <> 'withdrawn'
        ORDER BY applications.applied_at DESC`,
       [req.user.id]
     );
 
-    return res.json(result.rows);
+    res.json(result.rows);
   } catch (error) {
     console.error("Get employer applications error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 };
 
 
-// ======================================================
-// UPDATE APPLICATION STATUS
-// ======================================================
+// ============================================================
+// Employer updates application status
+// ============================================================
 const updateApplicationStatus = async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -212,7 +221,10 @@ const updateApplicationStatus = async (req, res) => {
       });
     }
 
-    // Make sure application belongs to employer's job
+    // --------------------------------------------------------
+    // Make sure this application belongs to a job posted
+    // by the logged-in employer
+    // --------------------------------------------------------
     const applicationResult = await pool.query(
       `SELECT applications.id
        FROM applications
@@ -229,7 +241,9 @@ const updateApplicationStatus = async (req, res) => {
       });
     }
 
+    // --------------------------------------------------------
     // Update status
+    // --------------------------------------------------------
     const result = await pool.query(
       `UPDATE applications
        SET status = $1
@@ -238,7 +252,9 @@ const updateApplicationStatus = async (req, res) => {
       [status, id]
     );
 
-    // Get candidate information
+    // --------------------------------------------------------
+    // Get candidate information for email
+    // --------------------------------------------------------
     const candidateResult = await pool.query(
       `SELECT
         users.name,
@@ -256,7 +272,9 @@ const updateApplicationStatus = async (req, res) => {
 
     const candidate = candidateResult.rows[0];
 
-    // Send status email
+    // --------------------------------------------------------
+    // Send status update email
+    // --------------------------------------------------------
     if (candidate) {
       try {
         await sendEmail(
@@ -277,23 +295,23 @@ Thank you.`
       }
     }
 
-    return res.json({
+    res.json({
       message: "Application status updated successfully",
       application: result.rows[0],
     });
   } catch (error) {
     console.error("Update application status error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 };
 
 
-// ======================================================
-// CANDIDATE WITHDRAWS APPLICATION
-// ======================================================
+// ============================================================
+// Candidate withdraws an application
+// ============================================================
 const withdrawApplication = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -309,7 +327,7 @@ const withdrawApplication = async (req, res) => {
        SET status = 'Withdrawn'
        WHERE id = $1
        AND candidate_id = $2
-       AND LOWER(COALESCE(status, 'Applied')) <> 'withdrawn'
+       AND LOWER(status) <> 'withdrawn'
        RETURNING *`,
       [id, req.user.id]
     );
@@ -320,20 +338,23 @@ const withdrawApplication = async (req, res) => {
       });
     }
 
-    return res.json({
+    res.json({
       message: "Application withdrawn successfully",
       application: result.rows[0],
     });
   } catch (error) {
     console.error("Withdraw application error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
     });
   }
 };
 
 
+// ============================================================
+// Export
+// ============================================================
 module.exports = {
   applyForJob,
   getMyApplications,
