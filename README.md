@@ -8,7 +8,7 @@ CareerGrid connects job seekers with employers by allowing candidates to browse 
 
 ## 🚀 Live Demo
 
-👉 **[Open CareerGrid](https://careergrid-codsoft-taskno1.vercel.app)**
+👉 **[Open CareerGrid](https://career-grid-codsoft-taskno-1-dtr7-nu.vercel.app/)**
 
 > The application is deployed and can be tested directly from the link above.
 
