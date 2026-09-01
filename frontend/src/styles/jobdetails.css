@@ -1,18 +1,20 @@
 .job-details-page {
   min-height: 100vh;
-  padding: 50px 8%;
-  background: #edfed4;
+  padding: 55px 8%;
+  background: #f5f7f2;
 }
 
 .job-details-card {
-  max-width: 900px;
+  max-width: 950px;
   margin: 0 auto;
   background: #ffffff;
-  padding: 40px;
-  border-radius: 16px;
-  border: 1px solid #def6ea;
-  box-shadow: 0 4px 20px rgba(23, 43, 42, 0.08);
+  padding: 42px;
+  border-radius: 18px;
+  border: 1px solid #e2e8e5;
+  box-shadow: 0 8px 30px rgba(23, 43, 42, 0.08);
 }
+
+/* Header */
 
 .job-details-header {
   display: flex;
@@ -21,14 +23,15 @@
   margin-bottom: 30px;
 }
 
-.company-logo {
-  width: 65px;
-  height: 65px;
-  border-radius: 12px;
+.job-details-header .company-logo {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #16866a !important;
+  background: #16866a;
   color: #ffffff;
   font-size: 28px;
   font-weight: bold;
@@ -40,74 +43,223 @@
   color: #172b2a;
 }
 
-.company-name {
+.job-details-header .company-name {
   margin: 0;
-  color: #536563;
+  color: #16866a;
   font-size: 18px;
+  font-weight: 600;
 }
+
+/* Job information */
 
 .job-details-info {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 15px;
   margin: 30px 0;
-  padding: 20px;
-  background: #e6fcf3;
-  border-radius: 10px;
+  padding: 22px;
+  background: #e6f3ee;
+  border-radius: 12px;
 }
 
-.job-details-info div {
+.job-details-info p {
+  margin: 0;
+  color: #445452;
+  line-height: 1.5;
+}
+
+.job-details-info strong {
   color: #172b2a;
 }
 
+/* Description sections */
+
 .job-details-card section {
-  margin-top: 30px;
+  margin-top: 32px;
 }
 
 .job-details-card section h2 {
   font-size: 22px;
-  margin-bottom: 10px;
+  margin: 0 0 12px;
   color: #172b2a;
 }
 
 .job-details-card section p {
+  margin: 0;
   color: #536563;
-  line-height: 1.7;
+  line-height: 1.8;
 }
+
+/* Messages */
+
+.success-message {
+  margin-top: 25px;
+  padding: 14px 18px;
+  background: #e6f3ee;
+  color: #16866a;
+  border: 1px solid #b7dfd2;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.error-message {
+  margin-top: 25px;
+  padding: 14px 18px;
+  background: #fff1f1;
+  color: #c0392b;
+  border: 1px solid #f0b5b5;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Action buttons */
 
 .job-actions {
   display: flex;
-  gap: 15px;
-  margin-top: 35px;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 38px;
+}
+
+.apply-button,
+.message-employer-button {
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .apply-button {
   border: none;
-  padding: 12px 25px;
-  border-radius: 8px;
   background: #16866a;
   color: #ffffff;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .apply-button:hover {
   background: #126d57;
+  transform: translateY(-1px);
+}
+
+.message-employer-button {
+  border: 1px solid #16866a;
+  background: #ffffff;
+  color: #16866a;
+}
+
+.message-employer-button:hover {
+  background: #e6f3ee;
+  transform: translateY(-1px);
 }
 
 .back-button {
-  padding: 12px 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
   border-radius: 8px;
   border: 1px solid #16866a;
+  background: #ffffff;
   color: #16866a;
   text-decoration: none;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .back-button:hover {
   background: #e6f3ee;
 }
+
+/* Already applied */
+
+.already-applied-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #e6f3ee;
+  color: #16866a;
+  border: 1px solid #b7dfd2;
+}
+
+.already-applied-box strong {
+  font-size: 15px;
+}
+
+.already-applied-box span {
+  font-size: 13px;
+  color: #555555;
+}
+
+/* Application form */
+
+.application-form {
+  margin-top: 35px;
+  padding-top: 30px;
+  border-top: 1px solid #e2e8df;
+}
+
+.application-form h2 {
+  margin: 0 0 25px;
+  color: #172b2a;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #172b2a;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cfd8cc;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  background: #ffffff;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #16866a;
+  box-shadow: 0 0 0 3px rgba(22, 134, 106, 0.1);
+}
+
+.form-group small {
+  display: block;
+  margin-top: 6px;
+  color: #777777;
+}
+
+.application-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.apply-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Mobile */
 
 @media (max-width: 700px) {
   .job-details-page {
@@ -118,150 +270,26 @@
     padding: 25px;
   }
 
-  .job-details-info {
-    grid-template-columns: 1fr;
-  }
-
   .job-details-header h1 {
     font-size: 25px;
   }
 
+  .job-details-info {
+    grid-template-columns: 1fr;
+  }
+
   .job-actions {
     flex-direction: column;
+    align-items: stretch;
   }
-}
-.success-message {
-  margin-top: 25px;
-  padding: 14px 18px;
-  background: #edfed4;
-  color: #16866a;
-  border: 1px solid #b8df9d;
-  border-radius: 8px;
-  font-weight: 600;
-}
 
-.error-message {
-  margin-top: 25px;
-  padding: 14px 18px;
-  background: #fff1f1;
-  color: #c0392b;
-  border: 1px solid #f0b5b5;
-  border-radius: 8px;
-  font-weight: 600;
-}
+  .job-actions > *,
+  .application-form-actions > * {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
 
-.apply-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-.application-form {
-  margin-top: 35px;
-  padding-top: 30px;
-  border-top: 1px solid #e2e8df;
-}
-
-.application-form h2 {
-  margin-bottom: 25px;
-}
-
-.form-group {
-  margin-bottom: 22px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cfd8cc;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 15px;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #16866a;
-}
-
-.form-group small {
-  display: block;
-  margin-top: 6px;
-  color: #777;
-}
-
-.application-form-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.application-form-actions .back-button {
-  background: white;
-  cursor: pointer;
-}
-
-.success-message {
-  margin-top: 25px;
-  padding: 14px 18px;
-  background: #edfed4;
-  color: #16866a;
-  border: 1px solid #b8df9d;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.error-message {
-  margin-top: 25px;
-  padding: 14px 18px;
-  background: #fff1f1;
-  color: #c0392b;
-  border: 1px solid #f0b5b5;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.message-employer-button {
-  padding: 12px 20px;
-  border: 1px solid #16866a;
-  border-radius: 8px;
-  background: white;
-  color: #16866a;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.message-employer-button:hover {
-  background: #edfed4;
-}
-
-.already-applied-box {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 18px;
-  border-radius: 8px;
-  background: #e8f5e9;
-  color: #16866a;
-  border: 1px solid #b7dfd2;
-}
-
-.already-applied-box strong {
-  font-size: 16px;
-}
-
-.already-applied-box span {
-  font-size: 13px;
-  color: #555;
-}
-
-@media (max-width: 700px) {
   .application-form-actions {
     flex-direction: column;
   }

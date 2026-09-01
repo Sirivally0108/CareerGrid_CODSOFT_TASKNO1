@@ -17,9 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 // Resume uploads
+const uploadsPath = path.join(__dirname, "uploads");
+
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+  express.static(uploadsPath)
 );
 
 // Routes
@@ -43,10 +45,37 @@ app.get("/", (req, res) => {
   });
 });
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error("Backend error:", err);
+
+  if (err && err.name === "MulterError") {
+    return res.status(400).json({
+      message: err.message,
+    });
+  }
+
+  if (err) {
+    return res.status(400).json({
+      message:
+        err.message ||
+        "Something went wrong. Please try again.",
+    });
+  }
+
+  next();
+});
+
 // Port
 const PORT = process.env.PORT || 5000;
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

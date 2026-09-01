@@ -4,6 +4,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "../styles/jobdetails.css";
 
+const API_URL =
+  "https://careergrid-codsoft-taskno1.onrender.com";
+
 function JobDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,12 +14,15 @@ function JobDetails() {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [showApplicationForm, setShowApplicationForm] =
+    useState(false);
+
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState("");
 
   const [alreadyApplied, setAlreadyApplied] = useState(false);
-  const [checkingApplication, setCheckingApplication] = useState(true);
+  const [checkingApplication, setCheckingApplication] =
+    useState(true);
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +34,7 @@ function JobDetails() {
       try {
         // Get job details
         const jobResponse = await fetch(
-          `https://careergrid-codsoft-taskno1.onrender.com/api/jobs/${id}`
+          `${API_URL}/api/jobs/${id}`
         );
 
         if (!jobResponse.ok) {
@@ -42,7 +48,7 @@ function JobDetails() {
         if (token) {
           try {
             const applicationResponse = await fetch(
-              "https://careergrid-codsoft-taskno1.onrender.com/api/applications/my",
+              `${API_URL}/api/applications/my`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -51,14 +57,17 @@ function JobDetails() {
             );
 
             if (applicationResponse.ok) {
-              const applications = await applicationResponse.json();
+              const applications =
+                await applicationResponse.json();
 
-              const applied = applications.some(
-                (application) =>
-                  String(application.job_id) === String(id)
-              );
+              if (Array.isArray(applications)) {
+                const applied = applications.some(
+                  (application) =>
+                    String(application.job_id) === String(id)
+                );
 
-              setAlreadyApplied(applied);
+                setAlreadyApplied(applied);
+              }
             }
           } catch (applicationError) {
             console.error(
@@ -131,10 +140,13 @@ function JobDetails() {
 
       formData.append("job_id", job.id);
       formData.append("resume", resume);
-      formData.append("cover_letter", coverLetter.trim());
+      formData.append(
+        "cover_letter",
+        coverLetter.trim()
+      );
 
       const response = await fetch(
-        "https://careergrid-codsoft-taskno1.onrender.com/api/applications",
+        `${API_URL}/api/applications`,
         {
           method: "POST",
           headers: {
@@ -147,7 +159,9 @@ function JobDetails() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Failed to submit application.");
+        setError(
+          data.message || "Failed to submit application."
+        );
         return;
       }
 
@@ -156,6 +170,7 @@ function JobDetails() {
       setShowApplicationForm(false);
       setResume(null);
       setCoverLetter("");
+      setAlreadyApplied(true);
     } catch (error) {
       console.error(error);
       setError("Unable to submit application.");
@@ -164,6 +179,7 @@ function JobDetails() {
 
   const handleMessageEmployer = () => {
     const currentToken = sessionStorage.getItem("token");
+
     const user = JSON.parse(
       sessionStorage.getItem("user") || "null"
     );
@@ -213,7 +229,10 @@ function JobDetails() {
           <h2>Job Not Found</h2>
           <p>{error}</p>
 
-          <Link to="/jobs" className="back-button">
+          <Link
+            to="/jobs"
+            className="back-button"
+          >
             Back to Jobs
           </Link>
         </main>
@@ -237,6 +256,7 @@ function JobDetails() {
 
             <div>
               <h1>{job.title}</h1>
+
               <p className="company-name">
                 {job.company}
               </p>
@@ -245,16 +265,19 @@ function JobDetails() {
 
           <div className="job-details-info">
             <p>
-              <strong>Location:</strong> {job.location}
+              <strong>Location:</strong>{" "}
+              {job.location}
             </p>
 
             <p>
-              <strong>Salary:</strong> {job.salary}
+              <strong>Salary:</strong>{" "}
+              {job.salary}
             </p>
 
             <p>
               <strong>Employment Type:</strong>{" "}
-              {job.employment_type}
+              {job.employment_type ||
+                job.job_type}
             </p>
           </div>
 
@@ -290,23 +313,28 @@ function JobDetails() {
                 Message Employer
               </button>
 
-              {!checkingApplication && !alreadyApplied && (
-                <button
-                  className="apply-button"
-                  onClick={handleApplyClick}
-                >
-                  Apply Now
-                </button>
-              )}
+              {!checkingApplication &&
+                !alreadyApplied && (
+                  <button
+                    className="apply-button"
+                    onClick={handleApplyClick}
+                  >
+                    Apply Now
+                  </button>
+                )}
 
-              {!checkingApplication && alreadyApplied && (
-                <div className="already-applied-box">
-                  <strong>✓ Already Applied</strong>
-                  <span>
-                    You have already applied for this job.
-                  </span>
-                </div>
-              )}
+              {!checkingApplication &&
+                alreadyApplied && (
+                  <div className="already-applied-box">
+                    <strong>
+                      ✓ Already Applied
+                    </strong>
+
+                    <span>
+                      You have already applied for this job.
+                    </span>
+                  </div>
+                )}
 
               <Link
                 to="/jobs"
@@ -335,7 +363,9 @@ function JobDetails() {
                   type="file"
                   accept=".pdf,.doc,.docx"
                   onChange={(event) =>
-                    setResume(event.target.files[0])
+                    setResume(
+                      event.target.files[0]
+                    )
                   }
                 />
 
@@ -355,7 +385,9 @@ function JobDetails() {
                   placeholder="Tell the employer why you are suitable for this job..."
                   value={coverLetter}
                   onChange={(event) =>
-                    setCoverLetter(event.target.value)
+                    setCoverLetter(
+                      event.target.value
+                    )
                   }
                 />
               </div>

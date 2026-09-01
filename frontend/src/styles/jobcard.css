@@ -1,46 +1,4 @@
 .job-card {
-  background: white;
-  width: 300px;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(23, 43, 42, 0.08);
-  transition: 0.3s;
-}
-
-.job-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(23, 43, 42, 0.12);
-}
-
-.job-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.company-logo-small {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: #e3f3ee;
-  color: #16866a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 20px;
-}
-
-.job-card button{
-    margin-top:15px;
-    width:100%;
-    padding:12px;
-    background:#2563eb;
-    color:white;
-    border:none;
-    border-radius:8px;
-}.job-card {
   background: #ffffff;
   width: 300px;
   padding: 24px;
@@ -62,25 +20,19 @@
   margin-bottom: 18px;
 }
 
-.company-logo {
+.job-card .company-logo {
   width: 56px;
   height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #16866a !important;
+  background: #16866a;
   color: #ffffff;
   border-radius: 12px;
   font-size: 24px;
   font-weight: bold;
 }
 
-.job-type {
-  background: #e6f3ee;
-  color: #16866a;
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 13px;
 .job-type {
   background: #fff4d8;
   color: #9a7115;
@@ -93,44 +45,38 @@
 .job-card h3 {
   color: #172b2a;
   font-size: 20px;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
 }
 
-.company-name {
-  color: #536563;
-  font-size: 16px;
-  margin-bottom: 18px;
-  margin-bottom: 8px;
-}
-
-.company-name {
+.job-card .company-name {
   color: #16866a;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin: 0 0 20px;
 }
 
 .job-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  color: #445452;
+  color: #5c6967;
   font-size: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .view-details {
   display: inline-block;
   text-decoration: none;
   background: #16866a;
-  color: white;
-  padding: 10px 18px;
+  color: #ffffff;
+  padding: 11px 20px;
   border-radius: 8px;
   font-weight: 600;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .view-details:hover {
   background: #126d57;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
@@ -138,24 +84,4 @@
     width: 100%;
     max-width: 400px;
   }
-  gap: 10px;
-  color: #5c6967;
-  font-size: 14px;
-  margin-bottom: 22px;
-}
-
-.details-button {
-  display: block;
-  text-align: center;
-  width: 100%;
-  padding: 12px;
-  background: #16866a;
-  color: white;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-
-.details-button:hover {
-  background: #117258;
 }

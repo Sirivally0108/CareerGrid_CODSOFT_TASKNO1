@@ -1,7 +1,9 @@
 const pool = require("../config/db");
 const { sendEmail } = require("../utils/emailService");
 
-// Apply for a job
+// =====================================================
+// APPLY FOR A JOB
+// =====================================================
 const applyForJob = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -33,8 +35,10 @@ const applyForJob = async (req, res) => {
 
     // Check whether candidate already applied
     const existingApplication = await pool.query(
-      `SELECT * FROM applications
-       WHERE job_id = $1 AND candidate_id = $2`,
+      `SELECT *
+       FROM applications
+       WHERE job_id = $1
+       AND candidate_id = $2`,
       [job_id, req.user.id]
     );
 
@@ -59,6 +63,7 @@ const applyForJob = async (req, res) => {
       ]
     );
 
+    // Get candidate details
     const candidateResult = await pool.query(
       "SELECT name, email FROM users WHERE id = $1",
       [req.user.id]
@@ -66,20 +71,23 @@ const applyForJob = async (req, res) => {
 
     const candidate = candidateResult.rows[0];
 
-    try {
-      await sendEmail(
-        candidate.email,
-        `Application Submitted - ${jobResult.rows[0].title}`,
-        `Hello ${candidate.name},
+    // Send application confirmation email
+    if (candidate) {
+      try {
+        await sendEmail(
+          candidate.email,
+          `Application Submitted - ${jobResult.rows[0].title}`,
+          `Hello ${candidate.name},
 
-    Your application for "${jobResult.rows[0].title}" at ${jobResult.rows[0].company} has been successfully submitted.
+Your application for "${jobResult.rows[0].title}" at ${jobResult.rows[0].company} has been successfully submitted.
 
-    Application status: Applied
+Application status: Applied
 
-    Thank you for using CareerGrid.`
-      );
-    } catch (emailError) {
-      console.error("Application email error:", emailError);
+Thank you for using CareerGrid.`
+        );
+      } catch (emailError) {
+        console.error("Application email error:", emailError);
+      }
     }
 
     res.status(201).json({
@@ -96,7 +104,9 @@ const applyForJob = async (req, res) => {
 };
 
 
-// Get candidate's applications
+// =====================================================
+// GET CANDIDATE'S APPLICATIONS
+// =====================================================
 const getMyApplications = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -112,7 +122,8 @@ const getMyApplications = async (req, res) => {
         jobs.company,
         jobs.location
        FROM applications
-       JOIN jobs ON applications.job_id = jobs.id
+       JOIN jobs
+         ON applications.job_id = jobs.id
        WHERE applications.candidate_id = $1
        ORDER BY applications.applied_at DESC`,
       [req.user.id]
@@ -129,7 +140,9 @@ const getMyApplications = async (req, res) => {
 };
 
 
-// Get applications for employer's jobs
+// =====================================================
+// GET APPLICATIONS FOR EMPLOYER'S JOBS
+// =====================================================
 const getEmployerApplications = async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -147,9 +160,12 @@ const getEmployerApplications = async (req, res) => {
         users.name AS candidate_name,
         users.email AS candidate_email
        FROM applications
-       JOIN jobs ON applications.job_id = jobs.id
-       JOIN users ON applications.candidate_id = users.id
+       JOIN jobs
+         ON applications.job_id = jobs.id
+       JOIN users
+         ON applications.candidate_id = users.id
        WHERE jobs.employer_id = $1
+       AND applications.status <> 'Withdrawn'
        ORDER BY applications.applied_at DESC`,
       [req.user.id]
     );
@@ -164,7 +180,10 @@ const getEmployerApplications = async (req, res) => {
   }
 };
 
-// Employer updates application status
+
+// =====================================================
+// EMPLOYER UPDATES APPLICATION STATUS
+// =====================================================
 const updateApplicationStatus = async (req, res) => {
   try {
     if (req.user.role !== "employer") {
@@ -188,12 +207,13 @@ const updateApplicationStatus = async (req, res) => {
       });
     }
 
-    // Make sure this application belongs to a job
-    // posted by the logged-in employer.
+    // Make sure the application belongs
+    // to a job posted by this employer
     const applicationResult = await pool.query(
       `SELECT applications.id
        FROM applications
-       JOIN jobs ON applications.job_id = jobs.id
+       JOIN jobs
+         ON applications.job_id = jobs.id
        WHERE applications.id = $1
        AND jobs.employer_id = $2`,
       [id, req.user.id]
@@ -205,6 +225,7 @@ const updateApplicationStatus = async (req, res) => {
       });
     }
 
+    // Update status
     const result = await pool.query(
       `UPDATE applications
        SET status = $1
@@ -212,17 +233,26 @@ const updateApplicationStatus = async (req, res) => {
        RETURNING *`,
       [status, id]
     );
+
+    // Get candidate details for email
     const candidateResult = await pool.query(
-      `SELECT users.name, users.email, jobs.title, jobs.company
-      FROM applications
-      JOIN users ON applications.candidate_id = users.id
-      JOIN jobs ON applications.job_id = jobs.id
-      WHERE applications.id = $1`,
+      `SELECT
+        users.name,
+        users.email,
+        jobs.title,
+        jobs.company
+       FROM applications
+       JOIN users
+         ON applications.candidate_id = users.id
+       JOIN jobs
+         ON applications.job_id = jobs.id
+       WHERE applications.id = $1`,
       [id]
     );
 
     const candidate = candidateResult.rows[0];
 
+    // Send status update email
     if (candidate) {
       try {
         await sendEmail(
@@ -230,24 +260,31 @@ const updateApplicationStatus = async (req, res) => {
           `Application Update - ${candidate.title}`,
           `Hello ${candidate.name},
 
-    Your application for "${candidate.title}" at ${candidate.company} has been updated.
+Your application for "${candidate.title}" at ${candidate.company} has been updated.
 
-    New status: ${status}
+New status: ${status}
 
-    Please log in to CareerGrid to view your application.
+Please log in to CareerGrid to view your application.
 
-    Thank you.`
+Thank you.`
         );
       } catch (emailError) {
-        console.error("Status update email error:", emailError);
+        console.error(
+          "Status update email error:",
+          emailError
+        );
       }
     }
+
     res.json({
       message: "Application status updated successfully",
       application: result.rows[0],
     });
   } catch (error) {
-    console.error("Update application status error:", error);
+    console.error(
+      "Update application status error:",
+      error
+    );
 
     res.status(500).json({
       message: "Server error",
@@ -255,7 +292,10 @@ const updateApplicationStatus = async (req, res) => {
   }
 };
 
-// Candidate withdraws an application
+
+// =====================================================
+// CANDIDATE WITHDRAWS APPLICATION
+// =====================================================
 const withdrawApplication = async (req, res) => {
   try {
     if (req.user.role !== "candidate") {
@@ -278,7 +318,8 @@ const withdrawApplication = async (req, res) => {
 
     if (result.rows.length === 0) {
       return res.status(404).json({
-        message: "Application not found or already withdrawn",
+        message:
+          "Application not found or already withdrawn",
       });
     }
 
@@ -287,13 +328,21 @@ const withdrawApplication = async (req, res) => {
       application: result.rows[0],
     });
   } catch (error) {
-    console.error("Withdraw application error:", error);
+    console.error(
+      "Withdraw application error:",
+      error
+    );
 
     res.status(500).json({
       message: "Server error",
     });
   }
 };
+
+
+// =====================================================
+// EXPORTS
+// =====================================================
 module.exports = {
   applyForJob,
   getMyApplications,

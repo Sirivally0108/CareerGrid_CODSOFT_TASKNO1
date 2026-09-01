@@ -22,7 +22,7 @@ function EmployerApplications() {
 
     try {
       const response = await fetch(
-        "https://careergrid-codsoft-taskno1.onrender.com/api/applications/employer",
+        "http://localhost:5000/api/applications/employer",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -33,13 +33,17 @@ function EmployerApplications() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to load applications");
+        throw new Error(
+          data.message || "Failed to load applications"
+        );
       }
 
       setApplications(data);
     } catch (err) {
       console.error(err);
-      setError(err.message || "Unable to load applications.");
+      setError(
+        err.message || "Unable to load applications."
+      );
     } finally {
       setLoading(false);
     }
@@ -55,7 +59,7 @@ function EmployerApplications() {
 
     try {
       const response = await fetch(
-        `https://careergrid-codsoft-taskno1.onrender.com/api/applications/${applicationId}/status`,
+        `http://localhost:5000/api/applications/${applicationId}/status`,
         {
           method: "PATCH",
           headers: {
@@ -69,22 +73,28 @@ function EmployerApplications() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to update status");
+        throw new Error(
+          data.message || "Failed to update status"
+        );
       }
+
+      const updatedStatus = data.application?.status || status;
 
       setApplications((currentApplications) =>
         currentApplications.map((application) =>
           application.id === applicationId
             ? {
                 ...application,
-                status: data.application.status,
+                status: updatedStatus,
               }
             : application
         )
       );
     } catch (err) {
       console.error(err);
-      setError(err.message || "Unable to update application status.");
+      setError(
+        err.message || "Unable to update application status."
+      );
     } finally {
       setUpdatingId(null);
     }
@@ -98,17 +108,20 @@ function EmployerApplications() {
 
   const appliedCount = applications.filter(
     (application) =>
-      (application.status || "").toLowerCase() === "applied"
+      (application.status || "Applied").toLowerCase() ===
+      "applied"
   ).length;
 
   const shortlistedCount = applications.filter(
     (application) =>
-      (application.status || "").toLowerCase() === "shortlisted"
+      (application.status || "").toLowerCase() ===
+      "shortlisted"
   ).length;
 
   const rejectedCount = applications.filter(
     (application) =>
-      (application.status || "").toLowerCase() === "rejected"
+      (application.status || "").toLowerCase() ===
+      "rejected"
   ).length;
 
   return (
@@ -119,12 +132,17 @@ function EmployerApplications() {
         <div className="dashboard-header">
           <div>
             <h1>Job Applications</h1>
+
             <p>
-              Review and manage candidates who applied for your jobs.
+              Review and manage candidates who applied
+              for your jobs.
             </p>
           </div>
 
-          <Link to="/employer" className="dashboard-button">
+          <Link
+            to="/employer"
+            className="dashboard-button"
+          >
             Back to Dashboard
           </Link>
         </div>
@@ -163,14 +181,18 @@ function EmployerApplications() {
           </p>
         )}
 
-        {!loading && !error && applications.length === 0 && (
-          <div className="empty-dashboard">
-            <h3>No applications yet</h3>
-            <p>
-              Candidates who apply for your jobs will appear here.
-            </p>
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          applications.length === 0 && (
+            <div className="empty-dashboard">
+              <h3>No applications yet</h3>
+
+              <p>
+                Candidates who apply for your jobs will
+                appear here.
+              </p>
+            </div>
+          )}
 
         {!loading && applications.length > 0 && (
           <section className="applications-section">
@@ -178,15 +200,21 @@ function EmployerApplications() {
 
             <div className="applications-list">
               {applications.map((application) => {
-                const status = application.status || "Applied";
+                const status =
+                  application.status || "Applied";
+
+                const normalizedStatus =
+                  status.toLowerCase();
 
                 return (
                   <div
                     className="application-card"
                     key={application.id}
                   >
-                    <div>
-                      <h3>{application.candidate_name}</h3>
+                    <div className="application-details">
+                      <h3>
+                        {application.candidate_name}
+                      </h3>
 
                       <p className="application-company">
                         {application.candidate_email}
@@ -204,12 +232,15 @@ function EmployerApplications() {
 
                       <p>
                         <strong>Resume:</strong>{" "}
+
                         {application.resume ? (
                           <a
-                            href={`https://careergrid-codsoft-taskno1.onrender.com/uploads/${application.resume}`}
+                            href={`http://localhost:5000/uploads/${encodeURIComponent(
+                              application.resume
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="view-job-button"
+                            className="view-job-button resume-button"
                           >
                             📄 View Resume
                           </a>
@@ -222,13 +253,14 @@ function EmployerApplications() {
                         <strong>Cover Letter:</strong>
                       </p>
 
-                      <p>
+                      <p className="cover-letter-text">
                         {application.cover_letter ||
                           "No cover letter provided."}
                       </p>
 
                       <p>
                         <strong>Applied:</strong>{" "}
+
                         {application.applied_at
                           ? new Date(
                               application.applied_at
@@ -239,7 +271,7 @@ function EmployerApplications() {
 
                     <div className="application-actions">
                       <span
-                        className={`status ${status.toLowerCase()}`}
+                        className={`status ${normalizedStatus}`}
                       >
                         {status}
                       </span>
@@ -247,7 +279,9 @@ function EmployerApplications() {
                       <button
                         type="button"
                         className="view-job-button"
-                        onClick={() => openMessage(application)}
+                        onClick={() =>
+                          openMessage(application)
+                        }
                       >
                         💬 Message Candidate
                       </button>
@@ -255,7 +289,25 @@ function EmployerApplications() {
                       <button
                         type="button"
                         className="view-job-button"
-                        disabled={updatingId === application.id}
+                        disabled={
+                          updatingId === application.id
+                        }
+                        onClick={() =>
+                          updateStatus(
+                            application.id,
+                            "Applied"
+                          )
+                        }
+                      >
+                        Applied
+                      </button>
+
+                      <button
+                        type="button"
+                        className="view-job-button"
+                        disabled={
+                          updatingId === application.id
+                        }
                         onClick={() =>
                           updateStatus(
                             application.id,
@@ -269,7 +321,9 @@ function EmployerApplications() {
                       <button
                         type="button"
                         className="view-job-button"
-                        disabled={updatingId === application.id}
+                        disabled={
+                          updatingId === application.id
+                        }
                         onClick={() =>
                           updateStatus(
                             application.id,
